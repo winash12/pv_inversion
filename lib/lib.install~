@@ -1,8 +1,0 @@
-#!/bin/csh 
-
-# ----- List of librarires -----------
-
-
-# Compile lib (f77)
-   gfortran -O3 -c -fbacktrace -ffpe-trap=zero,overflow,underflow,invalid,denormal `nf-config --fflags`  *.f90
-
