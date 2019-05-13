@@ -1,0 +1,121 @@
+# ----- Load modules ----------------------s----
+
+set DYN_TOOLS=/home/winash12/potentialVorticity
+
+# ----- Set libraries and includes ------------
+
+set libs   = "-I`pwd`/lib"
+set llibs  = "`pwd`/lib/*.o"
+
+set ncdf_incs  = `nf-config --fflags`
+set ncdf_libs  = `nf-config --flibs`
+
+# ----- Compile --------------------- ----------
+
+
+cd ${DYN_TOOLS}/post
+
+echo "gfortran -O0 -c -g -fbacktrace -ffpe-trap=zero,overflow,underflow cdfwriter.f90" 
+      gfortran  -O0 -c -g -fbacktrace -ffpe-trap=zero,overflow,invalid cdfwriter.f90 ${libs} ${ncdf_incs}   
+
+
+foreach tool ( add2p rotate_lalo )  
+
+\rm -f ${tool}.o
+\rm -f ${tool}
+
+echo "gfortran -O0 -c -g -fbacktrace -ffpe-trap=zero,overflow,underflow ${tool}.f90 ${libs} ${ncdf_incs}"  
+      gfortran  -O0 -c -g -fbacktrace -ffpe-trap=invalid,zero,overflow ${tool}.f90 ${libs} ${ncdf_incs}   
+echo "gfortran -o ${tool} ${tool}.o ${llibs} ${ncdf_libs}"        
+      gfortran -o ${tool} ${tool}.o ${llibs} ${ncdf_libs}
+
+if ( ! -f ${tool} ) then
+  echo "ERROR: compilation of <tool> failed... exit"
+  exit 1
+endif
+
+end
+
+cd ${DYN_TOOLS}/prep/
+
+echo "gfortran -O0 -c -g -fbacktrace -ffpe-trap=zero,overflow,underflow cdfread.f90" 
+      gfortran  -O0 -c -g -fbacktrace -ffpe-trap=zero,overflow,invalid cdfread.f90 ${libs} ${ncdf_incs}   
+
+
+foreach tool ( coastline cutnetcdf def_anomaly p2z ref_profile rotate_grid  z2s ) 
+
+\rm -f ${tool}.o
+\rm -f ${tool}
+
+echo "gfortran -c -g  -fbacktrace -ffpe-trap=invalid,zero,overflow ${tool}.f90 ${libs} ${ncdf_incs}"  
+      gfortran  -Wall -O0 -c -g  -fbacktrace -fbounds-check -ffpe-trap=invalid,zero,overflow  ${tool}.f90 ${libs} ${ncdf_incs}   
+
+echo "gfortran -o ${tool} ${tool}.o ${llibs} ${ncdf_libs}"        
+      gfortran -o ${tool} ${tool}.o cdfread.o ${llibs} ${ncdf_libs}
+
+if ( ! -f ${tool} ) then
+  echo "ERROR: compilation of <tool> failed... exit"
+  exit 1
+endif
+
+end
+
+
+
+cd ${DYN_TOOLS}/pvin/
+
+echo "gfortran -O0 -c -g -fbacktrace -ffpe-trap=zero,overflow,underflow cdfreadwrite.f90" 
+      gfortran  -O0 -c -g -fbacktrace -ffpe-trap=invalid,zero,overflow cdfreadwrite.f90 ${libs} ${ncdf_incs}   
+
+
+foreach tool ( inv_cart prep_iteration pv_to_qgpv ) 
+
+\rm -f ${tool}.o
+\rm -f ${tool}
+
+echo "gfortran -O0 -c -g -fbacktrace ${tool}.f90 ${ncdf_incs}"  
+      gfortran  -O0 -c -g  -fbacktrace  ${tool}.f90 ${libs} ${ncdf_incs}
+
+echo "gfortran   -o ${tool} ${tool}.o cdfreadwrite.o ${llibs} ${ncdf_libs}"        
+      gfortran   -o ${tool} ${tool}.o cdfreadwrite.o ${llibs} ${ncdf_libs}
+
+if ( ! -f ${tool} ) then
+  echo "ERROR: compilation of <tool> failed... exit"
+  exit 1
+endif
+
+end
+
+
+cd ${DYN_TOOLS}/spec/
+
+echo "gfortran -O0 -c -g -fbacktrace -ffpe-trap=zero,overflow,underflow cdfreadwrite.f90" 
+      gfortran  -O0 -c -g -fbacktrace -ffpe-trap=zero,overflow,underflow cdfreadwrite.f90 ${libs} ${ncdf_incs}   
+
+
+foreach tool ( modify_anomaly ) 
+
+\rm -f ${tool}.o
+\rm -f ${tool}
+
+echo "gfortran -c -g -fbacktrace -ffpe-trap=zero,overflow,underflow ${tool}.f90 ${libs} ${ncdf_incs}"  
+      gfortran -O0 -c -g -fbacktrace -ffpe-trap=zero,overflow,underflow ${tool}.f90 ${libs} ${ncdf_incs}   
+echo "gfortran -o ${tool} ${tool}.o cdfreadwrite.o ${llibs} ${ncdf_libs}"        
+      gfortran -o ${tool} ${tool}.o cdfreadwrite.o ${llibs} ${ncdf_libs}
+
+if ( ! -f ${tool} ) then
+  echo "ERROR: compilation of <tool> failed... exit"
+  exit 1
+endif
+
+end
+
+
+
+# ----- Set <bin> --------------------------------
+
+ln -svf ${DYN_TOOLS}/inversion.sh ${DYN_TOOLS}/bin
+
+chmod og+rx ${DYN_TOOLS}/bin
+
+exit 0
