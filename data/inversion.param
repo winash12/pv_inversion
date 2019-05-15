@@ -1,0 +1,46 @@
+BEGIN DATA
+  DATE    = 20060116_18;                                 ! Date for case study
+  INP_DIR = /home/aswin/potentialVorticity/data/inp;  ! Input directory 
+  RUN_DIR = /home/aswin/potentialVorticity/data/run;  ! Run directory
+  OUT_DIR = /home/aswin/potentialVorticity/data/out;  ! Output directory
+END DATA
+
+BEGIN GRID
+  GEO_XMIN = -180.;     ! Geographical grid in zonal direction
+  GEO_NX   =  361 ;    
+  GEO_DX   =    1.;
+  GEO_YMIN =   -90.;     ! Geographical grid in meridional direction
+  GEO_NY   =   181 ;
+  GEO_DY   =    1.;
+  GEO_ZMIN =    0.;     ! Vertical levels ( ZMIN and DZ in [m] )
+  GEO_NZ   =  125 ;
+  GEO_DZ   =  200.;
+  ROT_NX   =  250 ;     ! Rotated grid ( DX and DY in [deg] )
+  ROT_NY   =  250 ;  
+  ROT_DX   =  0.25;     
+  ROT_DY   =  0.25;
+  CLON     =  -65.;     ! Longitude, latitude [deg] and angle of rotated grid
+  CLAT     =   45.;     
+  CROT     =    0.;     
+  REF_R    =  -1;      ! Radius for reference radius; -1 if whole domain)
+END GRID
+
+BEGIN ANOMALY
+  BOX_XMIN = -1200.;    ! Box where to apply the digital filter
+  BOX_XMAX =  1200.;
+  BOX_YMIN = -1200.;
+  BOX_YMAX =  1200.;
+  BOX_ZMIN =  2000.;
+  BOX_ZMAX = 10000.;
+  NFILTER  =     5 ;    ! Number of filter iterations;
+  BOUND_XY =   500.;    ! Transition zone for horizontal boundaries ( in [km] )
+  BOUND_Z  =   500.;    ! Transition zone for vertical boundaries ( in [m] )
+END ANOMALY
+
+BEGIN NUMERICS
+  ALPHA     =    0.5;    ! Adjustment factor after one iteration step
+  NOFITER   =      6;    ! Number of "external" iterations
+  SAVEITER  =     no;    ! Flag whether to save iteration steps 
+  TRANS_XY  =   500.;    ! Smooth transition zone (in km) for back-insertion into P file
+  PS_CHANGE =    0.0;    ! Allow (1.0), do not allow (0.0), or fractionally allow (0<x<1) changes in surface pressure
+END NUMERICS
