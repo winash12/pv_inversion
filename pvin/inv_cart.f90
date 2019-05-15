@@ -1,15 +1,16 @@
 program inv_cart
 
-!     ********************************************************************************
-!     * CALCULATES FOR A PV AND THETA DISTRIBUTION OTHER PROGNOSTIC FIELDS BY        *
-!     * MEANS OF A PV INVERSION                                                      *
-!     *                                                                              *
-!     * Rene Fehlmann 1994 / Code re-organization: Michael Sprenger, 2006            *
-!     ********************************************************************************
+  !     ********************************************************************************
+  !     * CALCULATES FOR A PV AND THETA DISTRIBUTION OTHER PROGNOSTIC FIELDS BY        *
+  !     * MEANS OF A PV INVERSION                                                      *
+  !     *                                                                              *
+  !     * Rene Fehlmann 1994 / Code re-organization: Michael Sprenger, 2006
+  !     * Conversion to F90, netCDF Fortran by Ashwin Dinakar, 2017
+  !     ********************************************************************************
 
-!     --------------------------------------------------------------------------------
-!     Declaration of variables, parameters, externals and common blocks            
-!     --------------------------------------------------------------------------------
+  !     --------------------------------------------------------------------------------
+  !     Declaration of variables, parameters, externals and common blocks            
+  !     --------------------------------------------------------------------------------
   use kind_parameters,ONLY:&
        sp
   use netcdflibrary
